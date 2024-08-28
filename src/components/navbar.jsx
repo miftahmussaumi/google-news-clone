@@ -1,7 +1,37 @@
+import { useEffect, useState } from 'react';
 import googleLogo from '../assets/google-logo.png';
 import icnSearch from '../assets/icn_search.png';
+import { auth, googleProvider } from '../firebase/setup';
+import { signInWithPopup, signOut } from 'firebase/auth';
 
 const Navbar = () => {
+    //setUser berguna memodifikasi user
+    //null boleh diganti. Jika user belum login, maka useState nya 'null'
+    const [user,setUser] = useState(null);
+    
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+            console.log('currentUser',currentUser)
+            setUser(currentUser);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    const googleSignin = async () => {
+        try {
+            if (user) {
+                await signOut(auth)
+            } else {
+                await signInWithPopup(auth, googleProvider);
+            }
+            
+            await signInWithPopup(auth, googleProvider);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     return (
         <div className='bg-white flex items-center justify-center p-6 w-screen sticky'>
             <div className='flex items-center ml-5'>
@@ -12,7 +42,7 @@ const Navbar = () => {
                 <img src={icnSearch} className='w-5 h-5'/>
                 <input placeholder='Search for News' className='ml-4 bg-zinc-100' />
             </div>
-            <button className='ml-44 bg-blue-600 text-white p-2 w-28 rounded-md'>Sign In</button>
+            <button className='ml-44 bg-blue-600 text-white p-2 w-28 rounded-md' onClick={googleSignin}> {user ? 'Sign out' : 'Sign In'} </button>
         </div>
     );
 }

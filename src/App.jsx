@@ -1,6 +1,6 @@
 
 
-import Navbar from "./components/Navbar"
+import Navbar from "./components/navbar"
 import Menubar from "./components/Menubar"
 
 function App() {
@@ -10,7 +10,6 @@ function App() {
       <Navbar/> 
       <Menubar/>
     </div>
-    
   )
 }
 
